@@ -14,6 +14,8 @@
 #  Функция сервиса "Поиск переводов физическим лицам" (принимает транзакции в формате списка словарей)
 #  отдает корректный JSON-ответ
 
+import json
+
 from typing import List, Dict
 from src.utils import read_file
 from config import PATH_TO_FILE, setup_logger
@@ -38,7 +40,7 @@ def simple_search(transactions: List[dict], search: str) -> List[Dict]:
         ):
             transaction_list.append(transaction)
     logger.info("Функция завершила работу")
-    return transaction_list
+    return json.dumps(transaction_list, ensure_ascii=False)
 
 
 if __name__ == "__main__":
