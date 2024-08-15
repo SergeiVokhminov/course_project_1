@@ -23,7 +23,7 @@ from config import PATH_TO_FILE, setup_logger
 logger = setup_logger("services", "../logs/services.log")
 
 
-def simple_search(transactions: List[dict], search: str) -> List[Dict]:
+def simple_search(transactions: str | List[Dict], search: str) -> str | List[Dict]:
     """
     Функция обрабатывает список словарей с транзакциями по строке для поиска.
     :param transactions: Принимает список словарей транзакций.
