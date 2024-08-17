@@ -2,7 +2,6 @@ from typing import Any, Dict, List
 
 import pytest
 
-from unittest.mock import patch
 from src.utils import (prints_a_greeting, get_info_card, top_five_transactions,
                        get_json_file, exchange_rate, price_share)
 
@@ -54,3 +53,4 @@ def top_five_fnc():
 
 def test_top_five_transactions(top_five_fnc):
     assert top_five_transactions(transactions) == top_five_fnc
+

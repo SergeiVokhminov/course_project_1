@@ -1,11 +1,38 @@
 import json
+import logging
+import os
+import pandas as pd
 
-from config import setup_logger, PATH_TO_FILE
-from read_files import read_file
 from utils import (prints_a_greeting, get_info_card, top_five_transactions,
                    get_json_file, exchange_rate, price_share)
 
-logger = setup_logger("views", "logs/views.log")
+#  Путь до XLSX-файла
+PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+rel_file_path = os.path.join(current_dir, "../logs/views.log")
+abs_file_path = os.path.abspath(rel_file_path)
+
+logger = logging.getLogger("views")
+file_handler = logging.FileHandler(abs_file_path, "w", encoding="UTF-8")
+file_formatter = logging.Formatter("%(asctime)s - %(filename)s - %(levelname)s: %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
+
+
+def read_file(filename: str = "data/operations.xlsx"):
+    """
+    Функция для считывания финансовых операций из Excel.
+    :param filename: Принимает путь к файлу Excel в качестве аргумента.
+    :return: Выводит список словарей с транзакциями.
+    """
+
+    try:
+        pd_excel = pd.read_excel(filename)
+        return pd_excel.to_dict(orient="records")
+    except Exception as ex:
+        print(f"Неверный формат файла. Ошибка {ex}")
 
 
 def views_main(data: str, transactions):

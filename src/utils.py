@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 #  Путь до XLSX-файла
 PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")
+PATH_TO_FILE_JSON = os.path.join(os.path.dirname(__file__), "..", "user_settings.json")
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 rel_file_path = os.path.join(current_dir, "../logs/utils.log")
@@ -133,7 +134,7 @@ def top_five_transactions(transactions: List[Dict]) -> Any:
         return []
 
 
-def get_json_file(path: str = "user_settings.json") -> Any:
+def get_json_file(path: str = PATH_TO_FILE_JSON) -> Any:
     """
     Функция обрабатывает JSON-файл пользовательских настроек.
     :param path: Принимает JSON-файл.
