@@ -4,9 +4,10 @@ import logging
 
 #  Корневая директория проекта
 ROOT_DIR = os.path.dirname(__file__)
+# print(ROOT_DIR)
 
 #  Путь до XLSX-файла
-PATH_TO_FILE = os.path.join(ROOT_DIR, "data", "operations.xlsx")
+PATH_TO_FILE = os.path.join(ROOT_DIR, "..", "data", "operations.xlsx")
 
 
 #  Настройки для логгера
