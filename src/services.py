@@ -1,12 +1,11 @@
 import json
 import re
 
-
 from typing import List, Dict
 from read_files import read_file
 from config import PATH_TO_FILE, setup_logger
 
-logger = setup_logger("services", "../logs/services.log")
+logger = setup_logger("services", "logs/services.log")
 
 
 def simple_search(transactions: str | List[Dict], search: str) -> str | List[Dict]:
@@ -16,6 +15,7 @@ def simple_search(transactions: str | List[Dict], search: str) -> str | List[Dic
     :param search: Принимает строку для поиска.
     :return: Возвращает JSON-ответ со всеми транзакциями.
     """
+
     logger.info(f"Функция simple_search начала работу, строка для поиска: {search}")
     transaction_list = []
     logger.info("Функция формирует ответ")
