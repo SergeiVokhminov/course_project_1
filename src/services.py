@@ -30,7 +30,11 @@ def simple_search(transactions: str | List[Dict], search: str) -> str | List[Dic
 
 
 def filter_numbers(transaction: list | str) -> list | str:
-    """Функция фильтрует список по номеру телефона в описании"""
+    """
+    Функция фильтрует список по номерам телефона в описании.
+    :param transaction: Принимает список с транзакциями.
+    :return: Выводит список с транзакциями отфильтрованный по номерам телефона.
+    """
     logger.info("Функция filter_numbers начала работу.")
     new_list_filter = []
     logger.info("Функция фильтрует список по номерам телефона.")
