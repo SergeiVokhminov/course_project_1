@@ -1,23 +1,9 @@
-#  Функции сервиса "Выгодные категории повышенного кэшбэка"
-#  (принимает год, месяц для расчета и транзакции в формате списка словарей)
-
-#  Функции сервиса "Инвесткопилка" (принимает месяц для расчета,
-#  транзакции в формате списка словарей и лимит округления)
-#  отдает корректный JSON-ответ
-
-#  Функции сервиса "Простой поиск" (принимает строку - запрос для поиска и транзакции в формате списка словарей)
-#  отдает корректный JSON-ответ ГОТОВО
-
-#  Функция сервиса "Поиск по телефонным номерам" (принимает транзакции в формате списка словарей)
-#  отдает корректный JSON-ответ
-
-#  Функция сервиса "Поиск переводов физическим лицам" (принимает транзакции в формате списка словарей)
-#  отдает корректный JSON-ответ
-
 import json
+import re
+
 
 from typing import List, Dict
-from src.utils import read_file
+from read_files import read_file
 from config import PATH_TO_FILE, setup_logger
 
 logger = setup_logger("services", "../logs/services.log")
@@ -30,18 +16,34 @@ def simple_search(transactions: str | List[Dict], search: str) -> str | List[Dic
     :param search: Принимает строку для поиска.
     :return: Возвращает JSON-ответ со всеми транзакциями.
     """
-    logger.info(f"Функция начала работу, строка для поиска: {search}")
-    transactions_read = read_file(transactions)
+    logger.info(f"Функция simple_search начала работу, строка для поиска: {search}")
     transaction_list = []
-    for transaction in transactions_read:
+    logger.info("Функция формирует ответ")
+    for transaction in transactions:
         if (
             search == transaction.get("Описание")
             or search == transaction.get("Категория")
         ):
             transaction_list.append(transaction)
-    logger.info("Функция завершила работу")
+    logger.info("Функция simple_search завершила работу и вывела результат.")
     return json.dumps(transaction_list, ensure_ascii=False)
 
 
+def filter_numbers(transaction: list | str) -> list | str:
+    """Функция фильтрует список по номеру телефона в описании"""
+    logger.info("Функция filter_numbers начала работу.")
+    new_list_filter = []
+    logger.info("Функция фильтрует список по номерам телефона.")
+    for item in transaction:
+        if "Описание" in item and re.findall(
+                r"((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}", item.get("Описание"), flags=re.IGNORECASE
+        ):
+            new_list_filter.append(item)
+    logger.info("Функция filter_numbers завершила работу.")
+    return json.dumps(new_list_filter, ensure_ascii=False)
+
+
 if __name__ == "__main__":
-    print(simple_search(PATH_TO_FILE, "Переводы"))
+    print(simple_search(read_file(PATH_TO_FILE), "Переводы"))
+    print()
+    print(filter_numbers(read_file(PATH_TO_FILE)))
