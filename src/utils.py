@@ -1,18 +1,15 @@
-#  Вспомогательные функции, необходимые для работы страницы "Главная"
-#  Вспомогательные функции, необходимые для работы страницы "События"
-
 import json
 import os
-import pandas as pd
 import requests
 
 from datetime import datetime
+from collections import defaultdict
 from typing import Any, List, Dict
 from dotenv import load_dotenv
 from config import PATH_TO_FILE, setup_logger
 from read_files import read_file
 
-logger = setup_logger("utils", "../logs/utils.log")
+logger = setup_logger("utils", "logs/utils.log")
 
 load_dotenv()
 apilayer_token = os.getenv("API_KEY")
@@ -44,9 +41,9 @@ def prints_a_greeting(date_str: str):
             if start_time <= time_greeting <= finish_time:
                 logger.info("Функция prints_a_greeting завершила работу и вывела результат.")
                 return greeting_dict.get(item)[0]
-    except Exception as ex:
-        logger.info(f"Функция prints_a_greeting завершила работу с ошибкой {ex}")
-        print(f"Введены неверные данные! Произошла ошибка {ex}")
+    except Exception:
+        logger.info(f"Функция prints_a_greeting завершила работу с ошибкой.")
+        raise ValueError(f"Введены неверные данные!")
 
 
 def get_info_card(transactions: List[Dict]) -> Any:
@@ -56,10 +53,27 @@ def get_info_card(transactions: List[Dict]) -> Any:
     :return: Выводит информацию по каждой карте (последние 4 цифры, общую сумму расходов,
     кэшбэк (1 рубль на каждые 100 рублей)).
     """
-    #       logger.info()
-    transactions = read_file(PATH_TO_FILE)
-    card_number = list(set([transaction.get("Номер карты") for transaction in transactions if str(transaction.get("Номер карты")) != "nan"]))
-    return card_number
+
+    logger.info("Функция get_info_card начала работу.")
+    unique_card_nums = list(set([transaction.get("Номер карты") for transaction in transactions]))
+    expenditure_by_card = defaultdict(int)
+    logger.info("Функция обрабатывает данные.")
+    for card_num in unique_card_nums:
+        for transaction in transactions:
+            if transaction["Номер карты"] == card_num:
+                expenditure_by_card[card_num] += transaction.get("Сумма операции")
+    result_transaction_list = []
+    logger.info("Функция формирует итоговый результат.")
+    for item in expenditure_by_card:
+        result_transaction_list.append(
+            {
+                "last_digits": item[1:],
+                "total_spent": round(expenditure_by_card[item], 2),
+                "cashback": round(expenditure_by_card[item] / 100, 2),
+            }
+        )
+    logger.info("Функция get_info_card завершила работу.")
+    return result_transaction_list
 
 
 def top_five_transactions(transactions: List[Dict]) -> Any:
@@ -93,7 +107,7 @@ def top_five_transactions(transactions: List[Dict]) -> Any:
         return []
 
 
-def get_json_file(path: str = "../user_settings.json") -> Any:
+def get_json_file(path: str = "user_settings.json") -> Any:
     """
     Функция обрабатывает JSON-файл пользовательских настроек.
     :param path: Принимает JSON-файл.
@@ -147,7 +161,6 @@ def price_share(stocks: List) -> Any:
             url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={stock}&apikey={alphavantage_token}"
             response = requests.get(url)
             result = response.json()
-            # logger.info(f"{result}")
             result_stocks_list.append({"stock": stock, "price": round(float(result["Global Quote"]["05. price"]), 2)})
             logger.info("Функция завершила свою работу.")
         return result_stocks_list
@@ -158,8 +171,7 @@ def price_share(stocks: List) -> Any:
 
 if __name__ == "__main__":
     print(prints_a_greeting("2024-08-14 18:56:44"))
-    print(read_file(PATH_TO_FILE))
     print(get_info_card(read_file(PATH_TO_FILE)))
     print(top_five_transactions(read_file(PATH_TO_FILE)))
-    print(exchange_rate("../user_settings.json"))
-    print(price_share(["TSLA"]))
+    print(exchange_rate(["USD", "EUR"]))
+    print(price_share(["AAPL", "AMZN", "GOOGL", "MSFT", "TSLA"]))
