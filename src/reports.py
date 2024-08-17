@@ -1,11 +1,37 @@
+import os
+import logging
 import pandas as pd
 
 from datetime import datetime, timedelta
 from typing import Optional
-from config import PATH_TO_FILE, setup_logger
-from read_files import read_exel_df
 
-logger = setup_logger("reports", "logs/reports.log")
+#  Путь до XLSX-файла
+PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+rel_file_path = os.path.join(current_dir, "../logs/reports.log")
+abs_file_path = os.path.abspath(rel_file_path)
+
+logger = logging.getLogger("reports")
+file_handler = logging.FileHandler(abs_file_path, "w", encoding="UTF-8")
+file_formatter = logging.Formatter("%(asctime)s - %(filename)s - %(levelname)s: %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
+
+
+def read_exel_df(filename: str = "data/operations.xlsx"):
+    """
+    Функция читает и обрабатывает EXCEL-файл.
+    :param filename: Принимает путь до EXCEL-файл.
+    :return: Возвращает EXCEL-файл в формате DataFrame.
+    """
+
+    try:
+        df = pd.read_excel(filename)
+        return df
+    except Exception as ex:
+        raise Exception(f"Ошибка при обработке файла {ex}!")
 
 
 def report_to_file_default(func):
