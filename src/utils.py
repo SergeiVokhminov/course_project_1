@@ -6,7 +6,7 @@ import pandas as pd
 
 from datetime import datetime
 from collections import defaultdict
-from typing import Any, List, Dict
+from typing import Any, List
 from dotenv import load_dotenv
 
 #  Путь до XLSX-файла
@@ -29,7 +29,7 @@ apilayer_token = os.getenv("API_KEY")
 alphavantage_token = os.getenv("API_KEY_STOCK")
 
 
-def read_file(filename: str = "data/operations.xlsx"):
+def read_file(filename: str = "data/operations.xlsx") -> Any:
     """
     Функция для считывания финансовых операций из Excel.
     :param filename: Принимает путь к файлу Excel в качестве аргумента.
@@ -41,15 +41,16 @@ def read_file(filename: str = "data/operations.xlsx"):
         return pd_excel.to_dict(orient="records")
     except Exception as ex:
         print(f"Неверный формат файла. Ошибка {ex}")
+        return []
 
 
-def prints_a_greeting(date_str: str):
+def prints_a_greeting(date_str: str) -> Any:
     """
     Функция выводит приветствие в зависимости от текущего времени.
     :param date_str: Принимает строку с датой и времени в формате YYYY-MM-DD HH:MM:SS
     :return: Возвращает JSON-ответ
     """
-    logger.info(f"Функция prints_a_greeting начало работу.")
+    logger.info("Функция prints_a_greeting начало работу.")
     greeting_dict = {
         "1": ("Доброе утро.", "05:00:01", "12:00:00"),
         "2": ("Добрый день.", "12:00:01", "18:00:00"),
@@ -69,11 +70,11 @@ def prints_a_greeting(date_str: str):
                 logger.info("Функция prints_a_greeting завершила работу и вывела результат.")
                 return greeting_dict.get(item)[0]
     except Exception:
-        logger.info(f"Функция prints_a_greeting завершила работу с ошибкой.")
-        raise ValueError(f"Введены неверные данные!")
+        logger.info("Функция prints_a_greeting завершила работу с ошибкой.")
+        raise ValueError("Введены неверные данные!")
 
 
-def get_info_card(transactions: List[Dict]) -> Any:
+def get_info_card(transactions: list[dict]) -> list[dict]:
     """
     Функция обрабатывает список словарей с транзакциями и выводит результат.
     :param transactions: Список словарей с транзакциями.
@@ -82,28 +83,28 @@ def get_info_card(transactions: List[Dict]) -> Any:
     """
 
     logger.info("Функция get_info_card начала работу.")
-    unique_card_nums = list(set([transaction.get("Номер карты") for transaction in transactions]))
-    expenditure_by_card = defaultdict(int)
+    card_numbers = list(set([transaction.get("Номер карты") for transaction in transactions]))
+    expend_card = defaultdict(int)
     logger.info("Функция обрабатывает данные.")
-    for card_num in unique_card_nums:
+    for card_num in card_numbers:
         for transaction in transactions:
             if transaction["Номер карты"] == card_num:
-                expenditure_by_card[card_num] += transaction.get("Сумма операции")
+                expend_card[card_num] += transaction.get("Сумма операции")
     result_transaction_list = []
     logger.info("Функция формирует итоговый результат.")
-    for item in expenditure_by_card:
+    for item in expend_card:
         result_transaction_list.append(
             {
                 "last_digits": item[1:],
-                "total_spent": round(expenditure_by_card[item], 2),
-                "cashback": round(expenditure_by_card[item] / 100, 2),
+                "total_spent": round(expend_card[item], 2),
+                "cashback": round(expend_card[item] / 100, 2),
             }
         )
     logger.info("Функция get_info_card завершила работу.")
     return result_transaction_list
 
 
-def top_five_transactions(transactions: List[Dict]) -> Any:
+def top_five_transactions(transactions: list) -> Any | None:
     """
     Функция выводит топ-5 транзакций по сумме платежа.
     :param transactions: Список словарей с транзакциями.
@@ -127,10 +128,10 @@ def top_five_transactions(transactions: List[Dict]) -> Any:
                     "description": transaction.get("Описание"),
                 }
             )
-        logger.info("Функция top_five_transactions завершила работу и вывела результат.")
+        logger.info("Функция top_five_transactions завершила работу.")
         return result
     else:
-        logger.info("Функция top_five_transactions завершила работу и вывела пустой список.")
+        logger.info("Функция top_five_transactions завершила работу.")
         return []
 
 
@@ -147,8 +148,8 @@ def get_json_file(path: str = PATH_TO_FILE_JSON) -> Any:
             logger.info("Функция get_json_file завершила работу.")
             return data.get("user_currencies"), data.get("user_stocks")
     except Exception:
-        logger.error("Возникла ошибка при обработке файла пользовательских настроек!")
-        raise Exception("Возникла ошибка при обработке файла!")
+        logger.info("Возникла ошибка при обработке файла пользовательских настроек!")
+        raise ValueError("Возникла ошибка при обработке файла!")
 
 
 def exchange_rate(currency: List) -> Any:
@@ -192,13 +193,15 @@ def price_share(stocks: List) -> Any:
             logger.info("Функция завершила свою работу.")
         return result_stocks_list
     except Exception as ex:
-        logger.error(f"Функция price_share завершила свою работу с ошибкой {ex}!")
-        raise Exception("При работе функции произошла ошибка!")
+        logger.info(f"Функция price_share завершила свою работу с ошибкой {ex}!")
+        raise ValueError("При работе функции произошла ошибка!")
 
 
 if __name__ == "__main__":
+    print(read_file(PATH_TO_FILE))
     print(prints_a_greeting("2024-08-14 18:56:44"))
     print(get_info_card(read_file(PATH_TO_FILE)))
     print(top_five_transactions(read_file(PATH_TO_FILE)))
+    print(get_json_file())
     print(exchange_rate(["USD", "EUR"]))
     print(price_share(["AAPL", "AMZN", "GOOGL", "MSFT", "TSLA"]))

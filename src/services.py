@@ -4,7 +4,7 @@ import re
 import pandas as pd
 import logging
 
-from typing import List, Dict
+from typing import Any
 
 #  Путь до XLSX-файла
 PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")
@@ -21,7 +21,7 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.INFO)
 
 
-def read_file(filename: str = "data/operations.xlsx"):
+def read_file(filename: str = "data/operations.xlsx") -> Any:
     """
     Функция для считывания финансовых операций из Excel.
     :param filename: Принимает путь к файлу Excel в качестве аргумента.
@@ -35,7 +35,7 @@ def read_file(filename: str = "data/operations.xlsx"):
         print(f"Неверный формат файла. Ошибка {ex}")
 
 
-def simple_search(transactions: str | List[Dict], search: str) -> str | List[Dict]:
+def simple_search(transactions: list[dict], search: str) -> Any:
     """
     Функция обрабатывает список словарей с транзакциями по строке для поиска.
     :param transactions: Принимает список словарей транзакций.
@@ -47,16 +47,13 @@ def simple_search(transactions: str | List[Dict], search: str) -> str | List[Dic
     transaction_list = []
     logger.info("Функция формирует ответ")
     for transaction in transactions:
-        if (
-            search == transaction.get("Описание")
-            or search == transaction.get("Категория")
-        ):
+        if search == transaction.get("Описание") or search == transaction.get("Категория"):
             transaction_list.append(transaction)
     logger.info("Функция simple_search завершила работу и вывела результат.")
     return json.dumps(transaction_list, ensure_ascii=False)
 
 
-def filter_numbers(transaction: list | str) -> list | str:
+def filter_numbers(transaction: list) -> Any:
     """
     Функция фильтрует список по номерам телефона в описании.
     :param transaction: Принимает список с транзакциями.
@@ -67,7 +64,7 @@ def filter_numbers(transaction: list | str) -> list | str:
     logger.info("Функция фильтрует список по номерам телефона.")
     for item in transaction:
         if "Описание" in item and re.findall(
-                r"((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}", item.get("Описание"), flags=re.IGNORECASE
+            r"((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}", item.get("Описание"), flags=re.IGNORECASE
         ):
             new_list_filter.append(item)
     logger.info("Функция filter_numbers завершила работу.")

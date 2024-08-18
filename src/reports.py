@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Any, Callable
 
 #  Путь до XLSX-файла
 PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")
@@ -20,7 +20,7 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.INFO)
 
 
-def read_exel_df(filename: str = "data/operations.xlsx"):
+def read_exel_df(filename: str = "data/operations.xlsx") -> pd.DataFrame:
     """
     Функция читает и обрабатывает EXCEL-файл.
     :param filename: Принимает путь до EXCEL-файл.
@@ -34,19 +34,19 @@ def read_exel_df(filename: str = "data/operations.xlsx"):
         raise Exception(f"Ошибка при обработке файла {ex}!")
 
 
-def report_to_file_default(func):
-    def wrapper(*args, **kwargs):
-        logger.info("Декоратор начал работу")
+def report_to_file(func: Callable) -> Any:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        logger.info("Декоратор report_to_file начал работу")
         result = func(*args, **kwargs)
         with open("../report_file.txt", "w", encoding="UTF-8") as f:
             f.write(str(result))
         return result
 
-    logger.info("Декоратор завершил работу")
+    logger.info("Декоратор report_to_file завершил работу")
     return wrapper
 
 
-@report_to_file_default
+@report_to_file
 def spending_by_category(transactions: pd.DataFrame, category: str, date: Optional[str] = None) -> pd.DataFrame:
     """
     Функция возвращает траты по заданной категории за последние три месяца (от переданной даты).
@@ -67,13 +67,9 @@ def spending_by_category(transactions: pd.DataFrame, category: str, date: Option
 
     end_data = parsed_date - timedelta(days=90)
 
-    transactions = transactions[
-        pd.to_datetime(transactions["Дата операции"], dayfirst=True) <= parsed_date
-    ]
+    transactions = transactions[pd.to_datetime(transactions["Дата операции"], dayfirst=True) <= parsed_date]
 
-    transactions = transactions[
-        pd.to_datetime(transactions["Дата операции"], dayfirst=True) > end_data
-    ]
+    transactions = transactions[pd.to_datetime(transactions["Дата операции"], dayfirst=True) > end_data]
     logger.info("Функция spending_by_category завершила работу и вывела результат")
     return pd.DataFrame(transactions)
 

@@ -3,8 +3,15 @@ import logging
 import os
 import pandas as pd
 
-from utils import (prints_a_greeting, get_info_card, top_five_transactions,
-                   get_json_file, exchange_rate, price_share)
+from typing import Any
+from src.utils import (
+    prints_a_greeting,
+    get_info_card,
+    top_five_transactions,
+    get_json_file,
+    exchange_rate,
+    price_share,
+)
 
 #  Путь до XLSX-файла
 PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")
@@ -21,7 +28,7 @@ logger.addHandler(file_handler)
 logger.setLevel(logging.INFO)
 
 
-def read_file(filename: str = "data/operations.xlsx"):
+def read_file(filename: str = "data/operations.xlsx") -> Any:
     """
     Функция для считывания финансовых операций из Excel.
     :param filename: Принимает путь к файлу Excel в качестве аргумента.
@@ -35,7 +42,7 @@ def read_file(filename: str = "data/operations.xlsx"):
         print(f"Неверный формат файла. Ошибка {ex}")
 
 
-def views_main(data: str, transactions):
+def views_main(data: str, transactions: Any) -> Any:
     """
     Функция объединяет все вспомогательные функции и выводит результат.
     :param data: Принимает строку с датой и временем в формате YYYY-MM-DD HH:MM:SS.
@@ -63,7 +70,7 @@ def views_main(data: str, transactions):
             "cards": info_card,
             "top_transaction": five_transaction,
             "currency_rate": currency,
-            "stock_price": stock
+            "stock_price": stock,
         }
         logger.info("Функция views завершила работу и вывела результат.")
         return json.dumps(result_dict, ensure_ascii=False)
