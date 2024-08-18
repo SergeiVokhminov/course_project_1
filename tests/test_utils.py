@@ -9,11 +9,10 @@ from src.utils import (
     top_five_transactions,
     get_json_file,
     exchange_rate,
-    price_share,
 )
 
 
-# Тестируем функцию
+# Тестируем функцию чтения EXCEL-файла
 @patch("pandas.read_excel")
 def test_excel_ok(mock_read_excel: Any) -> Any:
     mock_read_excel.return_value.to_dict.return_value = [
