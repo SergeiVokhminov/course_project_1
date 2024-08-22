@@ -48,7 +48,7 @@ exclude = '''
 '''
 
 [tool.isort]
-line_lenght = 119
+line_length = 119
 
 [build-system]
 requires = ["poetry-core"]

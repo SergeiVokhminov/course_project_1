@@ -1,17 +1,12 @@
 import json
 import logging
 import os
+from typing import Any
+
 import pandas as pd
 
-from typing import Any
-from src.utils import (
-    prints_a_greeting,
-    get_info_card,
-    top_five_transactions,
-    get_json_file,
-    exchange_rate,
-    price_share,
-)
+from src.utils import (exchange_rate, get_info_card, get_json_file, price_share, prints_a_greeting,
+                       top_five_transactions)
 
 #  Путь до XLSX-файла
 PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")

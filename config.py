@@ -1,6 +1,6 @@
 #  Основные настройки
-import os
 import logging
+import os
 
 #  Корневая директория проекта
 ROOT_DIR = os.path.dirname(__file__)

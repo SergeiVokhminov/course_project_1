@@ -1,6 +1,6 @@
 import json
 
-from src.services import simple_search, filter_numbers
+from src.services import filter_numbers, simple_search
 
 
 def test_simple_search() -> None:

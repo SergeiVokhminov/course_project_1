@@ -1,12 +1,12 @@
 import json
-import os
 import logging
-import requests
-import pandas as pd
-
-from datetime import datetime
+import os
 from collections import defaultdict
+from datetime import datetime
 from typing import Any, List
+
+import pandas as pd
+import requests
 from dotenv import load_dotenv
 
 #  Путь до XLSX-файла

@@ -1,10 +1,10 @@
 import json
+import logging
 import os
 import re
-import pandas as pd
-import logging
-
 from typing import Any
+
+import pandas as pd
 
 #  Путь до XLSX-файла
 PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")

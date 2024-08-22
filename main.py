@@ -1,9 +1,9 @@
 import datetime
 
-from src.reports import spending_by_category, read_exel_df
+from src.reports import read_exel_df, spending_by_category
 from src.services import simple_search
 from src.utils import read_file
-from src.views import views_main, PATH_TO_FILE
+from src.views import PATH_TO_FILE, views_main
 
 date = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d %H:%M:%S")
 transactions_list = PATH_TO_FILE
