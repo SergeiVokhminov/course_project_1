@@ -1,9 +1,9 @@
-import os
 import logging
-import pandas as pd
-
+import os
 from datetime import datetime, timedelta
-from typing import Optional, Any, Callable
+from typing import Any, Callable, Optional
+
+import pandas as pd
 
 #  Путь до XLSX-файла
 PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "operations.xlsx")

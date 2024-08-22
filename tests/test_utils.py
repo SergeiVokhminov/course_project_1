@@ -1,15 +1,9 @@
+from typing import Any
+from unittest.mock import patch
+
 import pytest
 
-from unittest.mock import patch
-from typing import Any
-from src.utils import (
-    read_file,
-    prints_a_greeting,
-    get_info_card,
-    top_five_transactions,
-    get_json_file,
-    exchange_rate,
-)
+from src.utils import exchange_rate, get_info_card, get_json_file, prints_a_greeting, read_file, top_five_transactions
 
 
 # Тестируем функцию чтения EXCEL-файла
